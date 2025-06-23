@@ -1,20 +1,19 @@
-# Étape 1 : Build
+# Étape 1 : build de l'application React
 FROM node:20-alpine AS builder
 
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm ci
+RUN npm install
+
 COPY . .
+
 RUN npm run build
 
-# Étape 2 : Serveur nginx
+# Étape 2 : serveur nginx pour servir les fichiers statiques
 FROM nginx:alpine
 
-# Copie le build dans le dossier nginx
 COPY --from=builder /app/build /usr/share/nginx/html
-
-# Copie config nginx personnalisée si besoin
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
